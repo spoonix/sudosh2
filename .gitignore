@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-.deps
-*.o
-sudosh
-sudosh-replay
-config.*
-Makefile
-src/sudosh.conf
-sudosh*
-stamp-h1
-
-=======
 Makefile
 *.o
 src/sudosh
@@ -23,5 +11,4 @@ sudosh.1
 sudosh.conf.5
 stamp-h1
 src/.deps/
->>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 autom4te.cache/
