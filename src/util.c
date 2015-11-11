@@ -23,13 +23,21 @@ mklogdir (char *logdir)
 		   logdir);
 	  exit (EXIT_FAILURE);
 	}
+<<<<<<< HEAD
       fprintf (stderr, "[info]: created directory %s\r\n",
 	       logdir);
+=======
+      fprintf (stderr, "[info]: created directory %s\r\n", logdir);
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
     }
 
   /* Set perms if they're not what we require */
   if (d.st_mode != logdir_mode)
+<<<<<<< HEAD
       {
+=======
+    {
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
       if (chmod (logdir, logdir_mode) == -1)
 	{
 	  char str[BUFSIZ];
@@ -41,8 +49,14 @@ mklogdir (char *logdir)
 		   logdir);
 	  exit (EXIT_FAILURE);
 	}
+<<<<<<< HEAD
       fprintf (stderr, "[info]: chmod 0733 directory %s\n",
 	       logdir);
     }
 }
 
+=======
+      fprintf (stderr, "[info]: chmod 0733 directory %s\n", logdir);
+    }
+}
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c

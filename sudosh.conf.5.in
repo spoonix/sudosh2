@@ -1,5 +1,5 @@
 .\" Process this file with
-.\" groff -man -Tascii sudosh.1
+.\" groff -man -Tascii sudosh.conf.5
 .\"
 
 .TH SUDOSH.CONF 5 "December 21th 2007" @VERSION@ "User Manuals"
@@ -18,6 +18,13 @@ Use this to set the default logging directory.  Both sudosh and sudosh-replay wi
 .RS
 default shell = /path/to/default/shell
 This is the default shell sudosh will use if it cannot automatically determine which shell to use..RE
+.RE
+.IP "immutable_recordings"
+.RS
+immutable_recordings = (enabled|disabled)
+If enabled sets the append only flag on new recordings and changes the recording to
+immutable once it is complete. Only available on Linux, default disabled.
+.RE
 .IP delimiter
 .RS
 delimiter = -
@@ -36,14 +43,14 @@ Use this option to set which syslog facility sudosh will use.  The default is LO
 .IP "-c arg allow"
 .RS
 -c arg allow = command
-This option can be used multiple times.  If you wish to use sudosh as a default login shell and want to allow users to copy files, you can allow them to use commands such as rsync and scp.  For each command you want to allow, use a new line and option.
--c arg allow = scp
--c arg allow = rsync
+This option can be used multiple times.  If you wish to use sudosh as a default login shell and want to allow users to copy files, you can allow them to use commands such as rsync and scp.  For each command you want to allow, use a new line and option. To allow all commands, use the special value of *.
 .RE
 .SH EXAMPLES
 # Sudosh Configuration File
 .RE
 logdir                  = /var/log/sudosh
+.RE
+immutable_recordings    = enabled
 .RE
 default shell           = /bin/sh
 .RE

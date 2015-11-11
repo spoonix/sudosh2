@@ -21,12 +21,22 @@ PURPOSE.  See the Open Software License for details.
 #include "super.h"
 #include "struct.h"
 #include "getopt.h"
+<<<<<<< HEAD
+=======
+#ifdef __linux__
+#include <linux/fs.h>
+#endif
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 
 #ifndef SIGCHLD
 #define SIGCHLD	SIGCLD
 #endif
 
+<<<<<<< HEAD
 #define WRITE(a, b, c) do_write(a, b, c, __FILE__, __LINE__)
+=======
+#define DO_WRITE(a, b, c) do_write(a, b, c, __FILE__, __LINE__)
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 
 static struct termios termorig;
 static struct winsize winorig;
@@ -85,6 +95,10 @@ static char *progname;
 char start_msg[BUFSIZ];
 
 int loginshell = 0;
+<<<<<<< HEAD
+=======
+uid_t orig_euid;
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 
 static void bye (int);
 static void newwinsize (int);
@@ -94,6 +108,14 @@ static int findms (struct pst *);
 void mysyslog (int, const char *, ...);
 char *rand2str (size_t len);
 int do_write (int, void *, size_t, char *, unsigned int);
+<<<<<<< HEAD
+=======
+void set_file_flag(struct s_file *file, int flag);
+void unset_file_flag(struct s_file *file, int flag);
+void set_perms_and_close_file(struct s_file *file);
+void set_perms_and_open_file(struct s_file *file);
+int written=0;
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 
 extern void parse (option *, const char *);
 
@@ -124,6 +146,10 @@ main (int argc, char *argv[], char *environ[])
   double oldtime, newtime;
   struct stat ttybuf;
   int c;
+<<<<<<< HEAD
+=======
+  char argtest[BUFSIZ];
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 
   user.vshell = NULL;
   user.shell.ptr = NULL;
@@ -139,7 +165,11 @@ main (int argc, char *argv[], char *environ[])
     loginshell = 1;
 
   /* Who are you? */
+<<<<<<< HEAD
   user.pw = getpwuid ((uid_t) geteuid ());
+=======
+  user.pw = getpwuid ((uid_t) getuid ());
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 
   if (user.pw == NULL)
     {
@@ -158,14 +188,22 @@ main (int argc, char *argv[], char *environ[])
   if (strlen (user.term.ptr) < 1)
     user.term.ptr = "dumb";
 
+<<<<<<< HEAD
   snprintf(sysconfdir, BUFSIZ - 1, "%s/sudosh.conf", SYSCONFDIR);
   parse (&sudosh_option, sysconfdir);
 
   while ((c = getopt(argc, argv, "c:hivV")) != EOF)
+=======
+  snprintf (sysconfdir, BUFSIZ - 1, "%s/sudosh.conf", SYSCONFDIR);
+  parse (&sudosh_option, sysconfdir);
+
+  while ((c = getopt (argc, argv, "c:hivV")) != EOF)
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
     {
       switch (c)
 	{
 	case 'c':
+<<<<<<< HEAD
 //		fprintf(stderr,"optarg is [%s]\n",optarg);
 	  strncpy (user.from, user.pw->pw_name, BUFSIZ - 1);
 	  strncpy (c_str, optarg, BUFSIZ - 1);
@@ -200,6 +238,43 @@ main (int argc, char *argv[], char *environ[])
 //		fprintf(stderr,"Testing for %s\n",argtest);
 		
 		if (strstr(sudosh_option.argallow,argtest)!=NULL)
+=======
+//              fprintf(stderr,"optarg is [%s]\n",optarg);
+	  strncpy (user.from, user.pw->pw_name, BUFSIZ - 1);
+	  strncpy (c_str, optarg, BUFSIZ - 1);
+	  strncpy (c_command, optarg, BUFSIZ - 1);
+	  p = strchr (c_str, ' ');
+	  if (p)
+	    {
+	      p[0] = 0;
+//              fprintf(stderr,"args=%s\n",c_args);
+	    }
+
+	  if (c_str[0] != 0)
+	    {
+// Test for methods of escape
+	      if (strchr (c_command, ';') != NULL ||
+		  strchr (c_command, '&') != NULL ||
+		  strchr (c_command, '|') != NULL ||
+		  strchr (c_command, '<') != NULL ||
+		  strchr (c_command, '>') != NULL ||
+		  strchr (c_command, '`') != NULL)
+		{
+		  fprintf (stderr,
+			   "\"%s\" isn't allowed to be executed with process or redirect controls.\n",
+			   c_command);
+		  exit (EXIT_FAILURE);
+		}
+
+
+//              fprintf(stderr,"Testing c\n");
+	      // Make sure that c_str is in argallow
+
+	      sprintf (argtest, "$%.100s$", c_str);
+//              fprintf(stderr,"Testing for %s\n",argtest);
+
+	      if (strstr (sudosh_option.argallow, argtest) != NULL || strchr(sudosh_option.argallow, '*')!=NULL)
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 		{
 		  FILE *f;
 		  snprintf (script.name, (size_t) BUFSIZ - 1,
@@ -221,7 +296,11 @@ main (int argc, char *argv[], char *environ[])
 		  fprintf (f, "%.256s\n", c_str);
 		  fclose (f);
 
+<<<<<<< HEAD
 		  execl ("/bin/sh", "sh", "-c", c_command,  (char *) 0);
+=======
+		  execl ("/bin/sh", "sh", "-c", c_command, (char *) 0);
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 		  exit (EXIT_SUCCESS);
 		  break;
 		}
@@ -247,7 +326,12 @@ main (int argc, char *argv[], char *environ[])
 	  exit (EXIT_SUCCESS);
 	  break;
 	case 'i':
+<<<<<<< HEAD
 	  fprintf(stdout,"Ignoring initialize option, this is done automatically\n");
+=======
+	  fprintf (stdout,
+		   "Ignoring initialize option, this is done automatically\n");
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 	  exit (EXIT_SUCCESS);
 	  break;
 	case 'v':
@@ -279,11 +363,21 @@ main (int argc, char *argv[], char *environ[])
 	  exit (EXIT_FAILURE);
 	}
     }
+<<<<<<< HEAD
    else {
 	fprintf(stderr, "%s: couldn't get your controlling terminal.\n", progname);
 	exit(EXIT_FAILURE);
    }
   user.pw = getpwuid ((uid_t) geteuid ());
+=======
+  else
+    {
+      fprintf (stderr, "%s: couldn't get your controlling terminal.\n",
+	       progname);
+      exit (EXIT_FAILURE);
+    }
+  user.pw = getpwuid ((uid_t) getuid ());
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 
   snprintf (user.home.str, BUFSIZ - 1, "HOME=%s", user.pw->pw_dir);
   strncpy (user.to_home.str, user.pw->pw_dir, BUFSIZ - 1);
@@ -308,9 +402,15 @@ main (int argc, char *argv[], char *environ[])
       if (user.shell.ptr == NULL)
 	{
 	  fprintf (stderr, "Could not determine a valid shell.\n");
+<<<<<<< HEAD
 	if (sudosh_option.priority!=-1)
 		  mysyslog (sudosh_option.priority,
 			    "Could not determine a valid shell");
+=======
+	  if (sudosh_option.priority != -1)
+	    mysyslog (sudosh_option.priority,
+		      "Could not determine a valid shell");
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 	  exit (EXIT_FAILURE);
 	}
       else
@@ -326,9 +426,15 @@ main (int argc, char *argv[], char *environ[])
   if (stat ((const char *) user.shell.ptr, &s) == -1)
     {
       fprintf (stderr, "Shell %s doesn't exist.\n", user.shell.ptr);
+<<<<<<< HEAD
       if (sudosh_option.priority!=-1)
 	      mysyslog (sudosh_option.priority, "%s,%s: shell %s doesn't exist.",
 		user.from, ttyname (0), user.shell.ptr);
+=======
+      if (sudosh_option.priority != -1)
+	mysyslog (sudosh_option.priority, "%s,%s: shell %s doesn't exist.",
+		  user.from, ttyname (0), user.shell.ptr);
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
       exit (EXIT_FAILURE);
     }
 #else
@@ -338,6 +444,7 @@ main (int argc, char *argv[], char *environ[])
   if (loginshell)
     user.shell.ptr = sudosh_option.defshell;
 
+<<<<<<< HEAD
 
   script.bytes = 0;
   timing.bytes = 0;
@@ -345,6 +452,8 @@ main (int argc, char *argv[], char *environ[])
   input.bytes = 0;
 #endif
 
+=======
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
   snprintf (script.name, (size_t) BUFSIZ - 1, "%s/%s%c%s%cscript%c%i%c%s",
 	    sudosh_option.logdir, user.from, sudosh_option.fdl, user.to,
 	    sudosh_option.fdl, sudosh_option.fdl, (int) now,
@@ -360,6 +469,7 @@ main (int argc, char *argv[], char *environ[])
 	    sudosh_option.fdl, rand);
 #endif
   snprintf (start_msg, BUFSIZ - 1,
+<<<<<<< HEAD
 	    "starting session for %s as %s, tty %s, shell %s", user.from, user.to,
 	    ttyname (0), user.shell.ptr);
 
@@ -407,6 +517,19 @@ main (int argc, char *argv[], char *environ[])
 #endif
 	if (sudosh_option.priority!=-1)
 		  mysyslog (sudosh_option.priority, start_msg);
+=======
+	    "starting session for %s as %s, tty %s, shell %s", user.from,
+	    user.to, ttyname (0), user.shell.ptr);
+
+  set_perms_and_open_file(&script);
+  set_perms_and_open_file(&timing);
+#ifdef RECORDINPUT
+  set_perms_and_open_file(&input);
+#endif
+
+  if (sudosh_option.priority != -1)
+    mysyslog (sudosh_option.priority, start_msg);
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
   rawmode (0);
 
   if (findms (&pspair) < 0)
@@ -427,11 +550,21 @@ main (int argc, char *argv[], char *environ[])
       close (pspair.sfd);
     }
 
+<<<<<<< HEAD
   if (setuid (getuid ())!=0)
 	{
 	perror("setuid failed");
 	bye (EXIT_FAILURE);
 	}
+=======
+  orig_euid = geteuid();
+
+  if (seteuid (getuid ()) != 0)
+    {
+      perror ("setuid failed");
+      bye (EXIT_FAILURE);
+    }
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 
   memset (&sawinch, 0, sizeof sawinch);
   sawinch.sa_handler = newwinsize;
@@ -472,12 +605,21 @@ main (int argc, char *argv[], char *environ[])
 	{
 	  if ((n = read (pspair.mfd, iobuf, sizeof (iobuf))) > 0)
 	    {
+<<<<<<< HEAD
 	      WRITE (1, iobuf, n);
 	      script.bytes += WRITE (script.fd, iobuf, n);
 	    }
 	  newtime = tv.tv_sec + (double) tv.tv_usec / 1000000;
 	  snprintf (timing.str, BUFSIZ - 1, "%f %i\n", newtime - oldtime, n);
 	  timing.bytes += WRITE (timing.fd, &timing.str, strlen (timing.str));
+=======
+	      DO_WRITE (1, iobuf, n);
+	      script.bytes += DO_WRITE (script.fd, iobuf, n);
+	    }
+	  newtime = tv.tv_sec + (double) tv.tv_usec / 1000000;
+	  snprintf (timing.str, BUFSIZ - 1, "%f %i\n", newtime - oldtime, n);
+	  timing.bytes += DO_WRITE (timing.fd, &timing.str, strlen (timing.str));
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 	  oldtime = newtime;
 
 	}
@@ -486,7 +628,11 @@ main (int argc, char *argv[], char *environ[])
 	{
 	  if ((n = read (0, iobuf, BUFSIZ)) > 0)
 	    {
+<<<<<<< HEAD
 	      WRITE (pspair.mfd, iobuf, n);
+=======
+	      DO_WRITE (pspair.mfd, iobuf, n);
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 #ifdef RECORDINPUT
 	      switch (*iobuf)
 		{
@@ -506,14 +652,22 @@ main (int argc, char *argv[], char *environ[])
 		  snprintf (input.str, BUFSIZ - 1, "(ESC)");
 		  break;
 		default:
+<<<<<<< HEAD
 		  WRITE (input.fd, iobuf, 1);
+=======
+		  DO_WRITE (input.fd, iobuf, 1);
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 		  written = 1;
 		  break;
 		}
 
 	      if (written == 0)
 		{
+<<<<<<< HEAD
 		  WRITE (input.fd, &input.str, strlen (input.str));
+=======
+		  DO_WRITE (input.fd, &input.str, strlen (input.str));
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 		}
 #endif
 	    }
@@ -596,8 +750,13 @@ prepchild (struct pst *pst)
 
   if ((pst->sfd = open (pst->slave, O_RDWR)) < 0)
     exit (EXIT_FAILURE);
+<<<<<<< HEAD
   i=dup (0);
   i=dup (0);
+=======
+  i = dup (0);
+  i = dup (0);
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
   for (i = 3; i < 100; ++i)
     close (i);
 
@@ -606,11 +765,19 @@ prepchild (struct pst *pst)
 #endif
   (void) ioctl (0, TIOCSWINSZ, &winorig);
 
+<<<<<<< HEAD
   if (setuid (getuid ())!=0)
 	{
 	perror("setuid failed");
 	bye(EXIT_FAILURE);
 	}
+=======
+  if (setuid (getuid ()) != 0)
+    {
+      perror ("setuid failed");
+      bye (EXIT_FAILURE);
+    }
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 
   strncpy (newargv, user.shell.ptr, BUFSIZ - 1);
 
@@ -625,8 +792,12 @@ prepchild (struct pst *pst)
     snprintf (user.path.str, BUFSIZ - 1,
 	      "PATH=/sbin:/bin:/usr/sbin:/usr/bin");
   else
+<<<<<<< HEAD
     snprintf (user.path.str, BUFSIZ - 1,
 	      "PATH=/usr/bin:/bin:/usr/local/bin");
+=======
+    snprintf (user.path.str, BUFSIZ - 1, "PATH=/usr/bin:/bin:/usr/local/bin");
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 
 #ifdef HAVE_SETPENV
   /* I love AIX - setpenv takes care of everything, including chdir() and the env */
@@ -640,10 +811,17 @@ prepchild (struct pst *pst)
 	fprintf (stderr, "Unable to chdir to /tmp\n");
     }
 
+<<<<<<< HEAD
   if (sudosh_option.clearenvironment==0)
 	execl (user.shell.ptr, b, (char *) 0);
   else
 	execle (user.shell.ptr, b, (char *) 0, env_list);
+=======
+  if (sudosh_option.clearenvironment == 0)
+    execl (user.shell.ptr, b, (char *) 0);
+  else
+    execle (user.shell.ptr, b, (char *) 0, env_list);
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
 
   abort ();
 }
@@ -685,6 +863,7 @@ bye (int signum)
   (void) ioctl (0, TCSETS, &termorig);
 #endif
 
+<<<<<<< HEAD
   close (timing.fd);
   close (script.fd);
 #ifdef RECORDINPUT
@@ -694,6 +873,28 @@ bye (int signum)
   if (sudosh_option.priority!=-1)
   	mysyslog (sudosh_option.priority, "stopping session for %s as %s, tty %s, shell %s",
 	    user.from, user.to, ttyname(0), user.shell.ptr);
+=======
+  if (seteuid(orig_euid) != 0)
+    {
+      perror ("Reacquiring uid 0 failed");
+      bye (EXIT_FAILURE);
+    }
+  set_perms_and_close_file(&timing);
+  set_perms_and_close_file(&script);
+#ifdef RECORDINPUT
+  set_perms_and_close_file(&input);
+#endif
+  if (setuid(getuid()) != 0)
+    {
+      perror ("Dropping setuid 0 failed");
+      bye (EXIT_FAILURE);
+    }
+
+  if (sudosh_option.priority != -1)
+    mysyslog (sudosh_option.priority,
+	      "stopping session for %s as %s, tty %s, shell %s", user.from,
+	      user.to, ttyname (0), user.shell.ptr);
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
   exit (signum);
 }
 
@@ -746,3 +947,72 @@ do_write (int fd, void *buf, size_t size, char *file, unsigned int line)
 
   return s;
 }
+<<<<<<< HEAD
+=======
+
+#ifdef __linux__
+void set_file_flag(struct s_file *file, int flag) {
+  int flags = 0;
+  if (ioctl(file->fd, FS_IOC_GETFLAGS, &flags) == -1 ) {
+    printf("Unable to get inode flags for %s: %s\n", file->name, strerror(errno));
+    exit (EXIT_FAILURE);
+  }
+  flags |= flag;
+  if (ioctl(file->fd, FS_IOC_SETFLAGS, &flags) == -1 ) {
+    printf("Unable to set inode flag %d for %s: %s\n", flag, file->name, strerror(errno));
+    exit (EXIT_FAILURE);
+  }
+}
+
+void unset_file_flag(struct s_file *file, int flag) {
+  int flags = 0;
+  if (ioctl(file->fd, FS_IOC_GETFLAGS, &flags) == -1 ) {
+    printf("Unable to get inode flags for %s: %s\n", file->name, strerror(errno));
+    exit (EXIT_FAILURE);
+  }
+  flags &= ~(flag);
+  if (ioctl(file->fd, FS_IOC_SETFLAGS, &flags) == -1 ) {
+    printf("Unable to unset inode flag %d for %s: %s\n", flag, file->name, strerror(errno));
+    exit (EXIT_FAILURE);
+  }
+}
+#endif
+
+void set_perms_and_close_file(struct s_file *file) {
+#ifdef __linux__
+  if (sudosh_option.immutable_recordings)
+    unset_file_flag(file, FS_APPEND_FL);
+#endif
+  if (fchmod (file->fd, S_IRUSR | S_IRGRP) == -1 ) {
+    printf("Unable to chmod file %s: %s\n", file->name, strerror(errno));
+  }
+#ifdef __linux__
+  if (sudosh_option.immutable_recordings)
+    set_file_flag(file, FS_IMMUTABLE_FL);
+#endif
+  if (close (file->fd) == -1 ) {
+    printf("Unable to close file %s: %s\n", file->name, strerror(errno));
+  }
+}
+
+void set_perms_and_open_file(struct s_file *file) {
+  file->bytes = 0;
+  if ((file->fd =
+       open (file->name, O_WRONLY | O_CREAT | O_EXCL,
+	     S_IRUSR | S_IWUSR)) == -1)
+    {
+      printf("Unable to open file %s: %s\n", file->name, strerror(errno));
+      exit (EXIT_FAILURE);
+    }
+
+  if (fstat (file->fd, &file->stat) == -1)
+    {
+      printf("Unable to stat file %s: %s\n", file->name, strerror(errno));
+      exit (EXIT_FAILURE);
+    }
+#ifdef __linux__
+  if (sudosh_option.immutable_recordings)
+    set_file_flag(file, FS_APPEND_FL);
+#endif
+}
+>>>>>>> 5c766b9514232365e6d2c778c8a52d705bfa1b5c
